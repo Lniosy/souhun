@@ -12,6 +12,8 @@
 <p align="center">
   <a href="LICENSE">MIT</a>
   ·
+  <a href="docs/principle.md">原理</a>
+  ·
   <a href="docs/memory.md">记忆怎么分</a>
   ·
   <a href="docs/build.md">编译</a>
@@ -98,7 +100,8 @@ open "dist/搜魂.app"
 
 ```
 macapp/            正式应用。SwiftUI，入口 GrokMemory.swift
-docs/memory.md     记忆归属、属性，以及为什么必须经过 Bot
+docs/principle.md  登录、接口，以及为什么读写要经过 Bot
+docs/memory.md     记忆归属和属性
 docs/build.md      编译、图标、自检输出
 grok_client.py     早期协议客户端
 server.py          早期本机网页，只监听 127.0.0.1，已停用
