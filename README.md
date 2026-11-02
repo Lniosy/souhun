@@ -69,7 +69,7 @@ cd win
 ./build.sh
 ```
 
-产物是 `win/dist/搜魂.exe`。也可以从 [Releases](https://github.com/Lniosy/grok-bot-memory/releases/tag/v1.0.0) 下载已经打好的包。
+产物是 `win/dist/搜魂.exe`。也可以从 [Releases](https://github.com/Lniosy/souhun/releases/tag/v1.0.0) 下载已经打好的包。
 
 第一次打开会做五项检查：Grok Bot 是否安装、登录文件、本机能否解开登录、登录是否过期、接口是否连通。五项都通过之后，侧栏显示「检查通过」。某一项失败时，点「需要处理」看原因。Windows 上这项检查的名字仍叫钥匙串，实际读的是系统加密。
 

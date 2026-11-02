@@ -69,7 +69,7 @@ cd win
 ./build.sh
 ```
 
-The Windows build is `win/dist/搜魂.exe`. Packaged builds are on [Releases](https://github.com/Lniosy/grok-bot-memory/releases/tag/v1.0.0).
+The Windows build is `win/dist/搜魂.exe`. Packaged builds are on [Releases](https://github.com/Lniosy/souhun/releases/tag/v1.0.0).
 
 The first launch runs five checks: Grok Bot is installed, the login file exists, this computer can unlock it, the login is not expired, and the API answers. When all five pass, the sidebar says the checks passed. If one fails, open the details. On Windows that check is still named keychain; it reads Windows encryption.
 
