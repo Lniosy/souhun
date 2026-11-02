@@ -5,8 +5,8 @@
 <h1 align="center">搜魂</h1>
 
 <p align="center">
-  在 Mac 上查看、写入和忘掉 Grok Bot 的记忆。<br>
-  A Mac app for reading and writing Grok Bot memory.
+  在 Mac 和 Windows 上查看、写入和忘掉 Grok Bot 的记忆。<br>
+  <a href="README.en.md">English</a>
 </p>
 
 <p align="center">
@@ -44,11 +44,17 @@
 
 ## 准备
 
-1. Apple 芯片的 Mac，macOS 14 或更新版本。
-2. 安装 Grok Bot 并登录。
-3. 安装 Xcode 命令行工具：`xcode-select --install`。
+两边都要先安装并登录 Grok Bot。界面相同。
+
+| | Mac | Windows |
+|---|---|---|
+| 系统 | Apple 芯片，macOS 14 或更新 | 64 位，已安装 Edge WebView2 |
+| 登录材料 | 钥匙串解开本机登录记录 | 系统加密解开本机登录记录 |
+| 自己编译 | Xcode 命令行工具 | Go 1.26 |
 
 ## 安装
+
+Mac：
 
 ```bash
 cd macapp
@@ -56,23 +62,34 @@ cd macapp
 open "dist/搜魂.app"
 ```
 
-第一次打开会做五项检查：Grok Bot 是否安装、登录文件、钥匙串、登录是否过期、接口是否连通。五项都通过之后，侧栏显示「检查通过」。某一项失败时，点「需要处理」看原因。
+Windows：
+
+```bash
+cd win
+./build.sh
+```
+
+产物是 `win/dist/搜魂.exe`。也可以从 [Releases](https://github.com/Lniosy/grok-bot-memory/releases/tag/v1.0.0) 下载已经打好的包。
+
+第一次打开会做五项检查：Grok Bot 是否安装、登录文件、本机能否解开登录、登录是否过期、接口是否连通。五项都通过之后，侧栏显示「检查通过」。某一项失败时，点「需要处理」看原因。Windows 上这项检查的名字仍叫钥匙串，实际读的是系统加密。
 
 常见的下一步：
 
 | 界面提示 | 处理 |
 |---|---|
-| 没找到 Grok Bot.app | 先安装 Grok Bot，并至少打开一次 |
+| 没找到 Grok Bot | 先安装，并至少打开一次 |
 | 没有 sand-secrets.json | 在 Grok Bot 里登录 |
-| 读不到钥匙串 | 打开 Grok Bot 保持登录；系统询问时允许搜魂读取 |
+| 读不到钥匙串 | Mac：保持 Grok Bot 登录，系统询问时允许读取。Windows：用登录过 Grok Bot 的同一个 Windows 用户打开 |
 | 登录已过期 | 回到 Grok Bot 重新登录，再点「重新检测」 |
-
-Windows 64 位另有 `win/dist/搜魂.exe`。界面和上面相同。那台电脑需要安装并登录 Grok Bot，以及 Edge WebView2。编译见 [docs/build.md](docs/build.md)。
 
 自检命令不打印邮箱：
 
 ```bash
-"dist/搜魂.app/Contents/MacOS/GrokMemory" --check
+# Mac
+macapp/dist/搜魂.app/Contents/MacOS/GrokMemory --check
+
+# Windows
+搜魂.exe --check
 ```
 
 ## 使用

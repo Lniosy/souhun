@@ -11,3 +11,4 @@
 - 个人记忆通过当前 Bot 的记忆工具读写；团队记忆不在这里写入
 - 原理说明见 docs/principle.md
 - Windows 64 位版本在 win/，界面与 Mac 版一致
+- 文档同时说明 Mac 和 Windows，并提供英文版

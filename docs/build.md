@@ -1,5 +1,7 @@
 # 编译
 
+[English](build.en.md)
+
 在 `macapp/` 里执行 `./build.sh`。脚本只生成 arm64 应用，输出在 `macapp/dist/搜魂.app`。
 
 ## 机器要求

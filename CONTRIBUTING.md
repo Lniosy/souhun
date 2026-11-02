@@ -1,6 +1,8 @@
 # 参与修改
 
-改动保持在当前问题上。图形界面以 `macapp/GrokMemory.swift` 为准。
+[English](CONTRIBUTING.en.md)
+
+改动保持在当前问题上。Mac 界面以 `macapp/GrokMemory.swift` 为准，Windows 界面以 `win/ui.html` 为准，两边的文案保持一致。
 
 ## 环境
 
@@ -18,6 +20,8 @@ cd macapp
 ./build.sh
 open "dist/搜魂.app"
 ```
+
+Windows 在 `win/` 执行 `./build.sh`，得到 `dist/搜魂.exe`。需要 Go 1.26，可以在别的系统上交叉编译。说明在 [docs/build.md](docs/build.md)。
 
 自检只打印状态，不打印邮箱：
 
