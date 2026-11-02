@@ -1,0 +1,22 @@
+name: 故障
+description: 界面、读写或自检和预期不一致
+title: "[故障] "
+labels: ["bug"]
+body:
+  - type: textarea
+    attributes:
+      label: 发生了什么
+      description: 写步骤和界面上的原句。不要贴令牌、钥匙串、记忆正文或邮箱。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 期望
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: 系统
+      description: 例如 macOS 15、Apple 芯片、Grok Bot 版本、搜魂 1.0.0
+    validations:
+      required: true

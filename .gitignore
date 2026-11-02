@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# 本机编译结果。应用装到 /Applications 之后，这里可以删。
+macapp/build/
+macapp/dist/

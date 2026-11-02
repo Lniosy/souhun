@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grok Bot 记忆</title>
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --ink: #1d1a16;
+      --muted: #6d655c;
+      --line: #e2d9cc;
+      --card: #fffdf8;
+      --green: #1f4b3a;
+      --green-2: #e7f2ec;
+      --danger: #8d2f2f;
+      --warn: #8a5a12;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 15px/1.5 "Iowan Old Style", "Songti SC", Palatino, serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    header, main { width: min(980px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 28px 0 8px; }
+    h1 { font-size: 28px; font-weight: 650; margin: 0 0 6px; }
+    p.lead { margin: 0; color: var(--muted); max-width: 68ch; }
+    .bar {
+      display: flex; gap: 10px; align-items: end; flex-wrap: wrap;
+      margin: 18px 0;
+    }
+    label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+    select, input, textarea, button { font: inherit; color: inherit; }
+    select, input, textarea {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    select { min-width: 280px; }
+    button {
+      border: 0; border-radius: 10px; padding: 9px 14px; cursor: pointer;
+      background: var(--green); color: white;
+    }
+    button.secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+    button.danger { background: transparent; color: var(--danger); border: 1px solid #e7c8c8; }
+    button:disabled { opacity: 0.55; cursor: wait; }
+    .status { min-height: 1.4em; color: var(--warn); margin: 0 0 12px; }
+    .composer, .list {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .composer { display: grid; gap: 8px; margin-bottom: 14px; }
+    textarea { min-height: 84px; resize: vertical; }
+    .row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+    .meta { color: var(--muted); font-size: 13px; }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    li {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+    }
+    .text { white-space: pre-wrap; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .tag {
+      font-size: 12px; color: var(--green); background: var(--green-2);
+      border-radius: 999px; padding: 1px 8px;
+    }
+    .empty { color: var(--muted); padding: 8px 2px; }
+    .reply { margin-top: 8px; color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Grok Bot 记忆</h1>
+    <p class="lead">个人记忆没有单独的读写接口。这个页面让所选 Bot 用它自己的记忆工具导出、写入或忘掉一条事实。每次操作都会出现在该 Bot 的对话里。</p>
+  </header>
+  <main>
+    <div class="bar">
+      <label>Bot
+        <select id="bot"></select>
+      </label>
+      <button id="pull" type="button">从 Bot 拉取</button>
+      <label>筛选
+        <input id="filter" type="search" placeholder="搜索正文">
+      </label>
+    </div>
+    <p class="status" id="status"></p>
+    <form class="composer" id="composer">
+      <label>新的一条
+        <textarea id="text" placeholder="要记住的事实，尽量用原话"></textarea>
+      </label>
+      <div class="row">
+        <label>层级
+          <select id="tier">
+            <option value="log">log · 普通事实</option>
+            <option value="profile">profile · 指令或核心身份</option>
+          </select>
+        </label>
+        <button type="submit">写入</button>
+      </div>
+    </form>
+    <section class="list">
+      <div class="row">
+        <strong id="count">还没有拉取</strong>
+        <span class="meta" id="source"></span>
+      </div>
+      <ul id="items"></ul>
+      <p class="reply" id="reply"></p>
+    </section>
+  </main>
+  <script>
+    const botSelect = document.querySelector("#bot");
+    const statusEl = document.querySelector("#status");
+    const itemsEl = document.querySelector("#items");
+    const countEl = document.querySelector("#count");
+    const sourceEl = document.querySelector("#source");
+    const replyEl = document.querySelector("#reply");
+    const filterEl = document.querySelector("#filter");
+    const pullBtn = document.querySelector("#pull");
+    let memories = [];
+    let busy = false;
+
+    function setBusy(on, text) {
+      busy = on;
+      pullBtn.disabled = on;
+      document.querySelector("#composer button").disabled = on;
+      statusEl.textContent = text || "";
+    }
+
+    async function api(url, options) {
+      const response = await fetch(url, options);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "请求失败");
+      return data;
+    }
+
+    function render() {
+      const query = filterEl.value.trim().toLowerCase();
+      const shown = memories.filter(item => !query || item.text.toLowerCase().includes(query));
+      countEl.textContent = memories.length ? `${shown.length} / ${memories.length} 条` : "没有记忆";
+      itemsEl.replaceChildren();
+      if (!shown.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = memories.length ? "没有匹配的记忆。" : "点「从 Bot 拉取」。团队 Bot 会直接读服务端，个人 Bot 会在对话里导出。";
+        itemsEl.append(empty);
+        return;
+      }
+      for (const item of shown) {
+        const li = document.createElement("li");
+        const body = document.createElement("div");
+        const text = document.createElement("div");
+        text.className = "text";
+        text.textContent = item.text;
+        const tags = document.createElement("div");
+        tags.className = "tags";
+        for (const label of [item.tier, item.scope, item.learnedAt].filter(Boolean)) {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = label;
+          tags.append(tag);
+        }
+        body.append(text, tags);
+        const forget = document.createElement("button");
+        forget.type = "button";
+        forget.className = "danger";
+        forget.textContent = "忘掉";
+        forget.disabled = busy;
+        forget.addEventListener("click", () => forgetOne(item));
+        li.append(body, forget);
+        itemsEl.append(li);
+      }
+    }
+
+    async function loadBots() {
+      setBusy(true, "正在读取 Bot 列表…");
+      try {
+        const data = await api("/api/bots");
+        botSelect.replaceChildren();
+        for (const bot of data.bots) {
+          const option = document.createElement("option");
+          option.value = bot.id;
+          option.textContent = `${bot.name}${bot.kind === "room" ? " · 房间" : ""}`;
+          botSelect.append(option);
+        }
+        setBusy(false, data.bots.length ? "" : "这个账号下没有 Bot。");
+      } catch (error) {
+        setBusy(false, error.message);
+      }
+    }
+
+    async function pull() {
+      const agentId = botSelect.value;
+      if (!agentId) return;
+      setBusy(true, "正在让 Bot 导出记忆，可能要一两分钟…");
+      replyEl.textContent = "";
+      try {
+        const data = await api("/api/memories?agentId=" + encodeURIComponent(agentId));
+        memories = data.memories || [];
+        sourceEl.textContent = data.source === "server"
+          ? "来源：服务端直接列出"
+          : "来源：Bot 在对话里导出";
+        if (data.truncated) sourceEl.textContent += " · 这次可能没列完";
+        replyEl.textContent = data.reply ? "Bot 原文：\n" + data.reply : "";
+        render();
+        setBusy(false, "");
+      } catch (error) {
+        setBusy(false, error.message);
+      }
+    }
+
+    async function forgetOne(item) {
+      const agentId = botSelect.value;
+      if (!confirm("让这个 Bot 忘掉这一条？")) return;
+      setBusy(true, "正在让 Bot 忘掉这一条…");
+      try {
+        const data = await api("/api/memories/forget", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ agentId, text: item.text }),
+        });
+        replyEl.textContent = data.reply || "";
+        if (!data.ok) {
+          setBusy(false, data.reason || "Bot 没有确认已经忘掉。看下面的回复。");
+          render();
+          return;
+        }
+        memories = memories.filter(row => row.text !== item.text);
+        render();
+        setBusy(false, "Bot 确认已忘掉。可以再拉取一次核对。");
+      } catch (error) {
+        setBusy(false, error.message);
+      }
+    }
+
+    document.querySelector("#composer").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const agentId = botSelect.value;
+      const text = document.querySelector("#text").value;
+      const tier = document.querySelector("#tier").value;
+      setBusy(true, "正在让 Bot 写入…");
+      try {
+        const data = await api("/api/memories", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ agentId, text, tier }),
+        });
+        replyEl.textContent = data.reply || "";
+        if (!data.ok) {
+          setBusy(false, data.reason || "Bot 没有确认写入。看下面的回复。");
+          return;
+        }
+        memories = [{ text: text.trim(), tier, scope: "user", learnedAt: "" }, ...memories];
+        document.querySelector("#text").value = "";
+        render();
+        setBusy(false, "Bot 确认已写入。可以再拉取一次核对。");
+      } catch (error) {
+        setBusy(false, error.message);
+      }
+    });
+
+    pullBtn.addEventListener("click", pull);
+    filterEl.addEventListener("input", render);
+    loadBots();
+  </script>
+</body>
+</html>
