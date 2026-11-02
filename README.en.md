@@ -21,6 +21,14 @@
   <a href="SECURITY.en.md">Security</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/Lniosy/souhun/releases/tag/v1.0.0"><img alt="Mac package downloads" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FLniosy%2Fsouhun%2Freleases%2Ftags%2Fv1.0.0&query=%24.assets%5B0%5D.download_count&label=Mac&color=blue"></a>
+  <a href="https://github.com/Lniosy/souhun/releases/tag/v1.0.0"><img alt="Windows package downloads" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FLniosy%2Fsouhun%2Freleases%2Ftags%2Fv1.0.0&query=%24.assets%5B1%5D.download_count&label=Windows&color=blue"></a>
+  <a href="https://github.com/Lniosy/souhun/releases"><img alt="Downloads across all releases" src="https://img.shields.io/github/downloads/Lniosy/souhun/total?label=downloads&color=blue"></a>
+</p>
+
+Mac and Windows are the download counts for the two `v1.0.0` packages. They refresh when the page loads. `downloads` is the sum across every release. Views and clones stay in GitHub Insights, visible to admins only. A public page cannot read them.
+
 Memory is not a local file. Souhun uses the Grok Bot login already on this computer, asks that bot to remember or forget one item, and labels who it belongs to.
 
 ## What it does

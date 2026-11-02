@@ -21,6 +21,14 @@
   <a href="SECURITY.md">安全</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/Lniosy/souhun/releases/tag/v1.0.0"><img alt="Mac 安装包下载次数" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FLniosy%2Fsouhun%2Freleases%2Ftags%2Fv1.0.0&query=%24.assets%5B0%5D.download_count&label=Mac&color=blue"></a>
+  <a href="https://github.com/Lniosy/souhun/releases/tag/v1.0.0"><img alt="Windows 安装包下载次数" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FLniosy%2Fsouhun%2Freleases%2Ftags%2Fv1.0.0&query=%24.assets%5B1%5D.download_count&label=Windows&color=blue"></a>
+  <a href="https://github.com/Lniosy/souhun/releases"><img alt="全部版本下载合计" src="https://img.shields.io/github/downloads/Lniosy/souhun/total?label=downloads&color=blue"></a>
+</p>
+
+Mac、Windows 是当前 `v1.0.0` 两个安装包的下载次数，打开页面就会更新。`downloads` 是所有版本加在一起。仓库浏览和克隆在 GitHub 的 Insights 里，只对管理员可见，公开页面读不到。
+
 记忆不在本机文件里。搜魂使用你已经登录的 Grok Bot，把一条记忆交给对应的 Bot 记住或忘掉，并在列表里标出它属于谁。
 
 ## 适合什么
