@@ -21,6 +21,25 @@
 
 源图是 `macapp/AppIcon.png`（1024）。脚本会生成 `AppIcon.icns`，并把它和 PNG 一起放进应用资源。界面侧栏读的是 PNG。图的四角在文件里是方的，窗口里用连续圆角裁切。
 
+## Windows
+
+Windows 版在 `win/`，用 Go 写成，界面和 Mac 版是同一套：侧栏、Bot 列表、拉取、写入时的两个选择、忘掉。登录记录改用 Windows 的系统加密解开，不走 Mac 钥匙串。
+
+在能交叉编译的机器上：
+
+```bash
+cd win
+./build.sh
+```
+
+产物是 `win/dist/搜魂.exe`，只含 64 位 Windows。电脑上要有 Microsoft Edge WebView2，以及已安装并登录的 Grok Bot。自检：
+
+```bat
+搜魂.exe --check
+```
+
+输出和 Mac 版相同：`app`、`secrets`、`keychain`、`login`、`api`、`ready`、`bots`、`login_named`。这里的 `keychain` 只是同一项检查的名字，Windows 上实际读的是系统加密。
+
 ## 自检
 
 ```bash

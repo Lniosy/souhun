@@ -75,6 +75,8 @@ open "dist/搜魂.app"
 | 读不到钥匙串 | 打开 Grok Bot 保持登录；系统询问时允许搜魂读取 |
 | 登录已过期 | 回到 Grok Bot 重新登录，再点「重新检测」 |
 
+Windows 64 位另有 `win/dist/搜魂.exe`。界面和上面相同。那台电脑需要安装并登录 Grok Bot，以及 Edge WebView2。编译见 [docs/build.md](docs/build.md)。
+
 自检命令不打印邮箱：
 
 ```bash
@@ -99,7 +101,8 @@ open "dist/搜魂.app"
 ## 仓库
 
 ```
-macapp/            正式应用。SwiftUI，入口 GrokMemory.swift
+macapp/            Mac 应用。SwiftUI，入口 GrokMemory.swift
+win/               Windows 应用。Go，界面与 Mac 版一致
 docs/principle.md  登录、接口，以及为什么读写要经过 Bot
 docs/memory.md     记忆归属和属性
 docs/build.md      编译、图标、自检输出

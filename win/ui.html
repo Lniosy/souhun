@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>搜魂</title>
+<style>
+  :root {
+    color-scheme: light;
+    --sidebar: #f2f2f4;
+    --line: rgba(0,0,0,.08);
+    --text: #1d1d1f;
+    --secondary: #6e6e73;
+    --blue: #0071e3;
+    --green: #1b7f3a;
+    --orange: #b86e00;
+    --team: #0b57d0;
+    --danger: #c41e3a;
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #fff; color: var(--text); }
+  body { display: grid; grid-template-columns: 248px 1fr; min-width: 860px; min-height: 560px; }
+  aside { background: var(--sidebar); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  .brand { display: flex; gap: 10px; align-items: center; padding: 14px 14px 8px; }
+  .brand img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+  .brand h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
+  .brand p { margin: 2px 0 0; font-size: 12px; color: var(--secondary); }
+  .bots { list-style: none; margin: 0; padding: 4px 8px; overflow: auto; flex: 1; }
+  .bots button { width: 100%; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 8px 10px; font: inherit; color: inherit; cursor: pointer; }
+  .bots button.selected { background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.06); }
+  .side-foot { padding: 12px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .ok { color: var(--green); font-size: 12px; font-weight: 600; }
+  button.link { border: 0; background: transparent; color: var(--text); font: inherit; font-size: 12px; padding: 0; cursor: pointer; }
+  button.small { border: 1px solid rgba(0,0,0,.15); background: #fff; border-radius: 6px; padding: 4px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  button.small:disabled, button.primary:disabled, button.danger:disabled { opacity: .45; cursor: default; }
+  main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .toolbar h2 { margin: 0; font-size: 16px; font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  input.search { width: 180px; border: 1px solid rgba(0,0,0,.12); border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; }
+  button.tool { border: 1px solid rgba(0,0,0,.12); background: #fff; border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .source { padding: 10px 16px 0; color: var(--secondary); font-size: 12px; }
+  .list { flex: 1; overflow: auto; padding: 8px 12px 12px; }
+  .empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--secondary); text-align: center; gap: 6px; }
+  .empty strong { color: var(--text); font-size: 16px; }
+  .row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+  .own { flex: 0 0 72px; text-align: center; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 3px 0; }
+  .own.user { color: var(--green); background: rgba(27,127,58,.16); }
+  .own.agent { color: var(--orange); background: rgba(184,110,0,.16); }
+  .own.team { color: var(--team); background: rgba(11,87,208,.16); }
+  .own.unknown { color: var(--secondary); background: rgba(0,0,0,.06); }
+  .body { flex: 1; min-width: 0; }
+  .body p { margin: 0; white-space: pre-wrap; }
+  .tags { display: flex; gap: 6px; margin-top: 4px; }
+  .tag { font-size: 12px; background: rgba(0,0,0,.06); border-radius: 999px; padding: 2px 6px; }
+  button.danger { border: 1px solid rgba(196,30,58,.35); color: var(--danger); background: #fff; border-radius: 6px; padding: 4px 8px; font: inherit; font-size: 12px; cursor: pointer; }
+  .composer { border-top: 1px solid var(--line); padding: 12px 16px 8px; }
+  textarea { width: 100%; height: 84px; resize: none; border: 1px solid rgba(0,0,0,.12); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 14px; }
+  .choice { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .choice span { width: 32px; font-size: 12px; color: var(--secondary); }
+  .seg { display: flex; flex: 1; border: 1px solid rgba(0,0,0,.12); border-radius: 8px; overflow: hidden; }
+  .seg button { flex: 1; border: 0; background: #fff; padding: 6px 8px; font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button.on { background: #e8e8ed; font-weight: 600; }
+  .hint { margin: 8px 0 0; font-size: 12px; color: var(--secondary); }
+  .write-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+  button.primary { background: var(--blue); color: #fff; border: 0; border-radius: 8px; padding: 7px 16px; font: inherit; font-weight: 600; cursor: pointer; }
+  .status { display: flex; gap: 8px; align-items: center; padding: 0 16px 10px; color: var(--secondary); font-size: 12px; min-height: 28px; }
+  .pop { position: fixed; z-index: 5; width: 300px; background: #fff; border: 1px solid rgba(0,0,0,.12); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.16); padding: 14px 16px; }
+  .pop h3 { margin: 0 0 8px; font-size: 15px; }
+  .pop p, .check p { margin: 0; font-size: 13px; color: var(--secondary); }
+  .check { display: flex; gap: 6px; margin-top: 8px; }
+  .check b { display: block; color: var(--text); font-size: 12px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<aside>
+  <div class="brand">
+    <img alt="" src="data:image/png;base64,__ICON__">
+    <div>
+      <h1>搜魂</h1>
+      <p id="readyLine">还不能用</p>
+    </div>
+  </div>
+  <ul class="bots" id="bots"></ul>
+  <div class="side-foot">
+    <div class="ok hidden" id="passed">检查通过</div>
+    <button class="link" id="checkBtn" type="button">需要处理 ⓘ</button>
+    <button class="small" id="refreshBtn" type="button">重新检测</button>
+  </div>
+</aside>
+<main>
+  <div class="toolbar">
+    <h2 id="title">搜魂</h2>
+    <input class="search" id="filter" placeholder="搜索记忆或归属" type="search">
+    <button class="tool" id="helpBtn" type="button" title="记忆怎么分">ⓘ</button>
+    <button class="tool" id="pullBtn" type="button">拉取记忆</button>
+  </div>
+  <div class="source hidden" id="source"></div>
+  <div class="list" id="list"></div>
+  <div class="composer">
+    <textarea id="draft" placeholder="写一条记忆"></textarea>
+    <div class="choice"><span>写到</span><div class="seg" id="scopeSeg">
+      <button type="button" data-value="user" class="on">账号共用</button>
+      <button type="button" data-value="agent">仅此 Bot</button>
+    </div></div>
+    <div class="choice"><span>属性</span><div class="seg" id="tierSeg">
+      <button type="button" data-value="log" class="on">普通事实</button>
+      <button type="button" data-value="profile">指令</button>
+    </div></div>
+    <p class="hint" id="hint"></p>
+    <div class="write-row"><button class="primary" id="writeBtn" type="button">写入</button></div>
+  </div>
+  <div class="status"><span id="status"></span></div>
+</main>
+<div class="pop hidden" id="checkPop"></div>
+<div class="pop hidden" id="helpPop">
+  <h3>记忆怎么分</h3>
+  <p>写入前要选两样：写到哪里，以及它是什么属性。账号共用时所有 Bot 都能回忆；仅此 Bot 只有左边选中的这个能回忆。普通事实用到才回忆。指令之后都会用。团队记忆不从这里写入。</p>
+  <p style="margin-top:8px">人设、技能和聊天记录不在这份记忆里。以前没写成账号共用的，只有当时那个 Bot 能回忆。团队 Bot 另有一份摘要，可能有时间差。</p>
+  <p style="margin-top:8px">每条前面的标签是归属：账号共用、仅此 Bot、团队。没返回范围时是未标明。</p>
+</div>
+<script>
+const state = { scope: "user", tier: "log", filter: "", data: null };
+const $ = (id) => document.getElementById(id);
+
+function hint() {
+  const place = state.scope === "agent" ? "只写给左边选中的这个 Bot" : "所有 Bot 都能回忆";
+  const kind = state.tier === "profile" ? "属性是指令，之后都会用" : "属性是普通事实，用到才回忆";
+  $("hint").textContent = place + "。" + kind + "。";
+}
+
+function shown() {
+  const q = state.filter.trim().toLowerCase();
+  const rows = (state.data && state.data.memories) || [];
+  if (!q) return rows;
+  return rows.filter((item) => (item.text + item.ownership + item.tierLabel).toLowerCase().includes(q));
+}
+
+function render() {
+  const data = state.data || { bots: [], checks: [], memories: [], ready: false, busy: false, status: "", selected: "", allPassed: false, source: "", note: "" };
+  $("readyLine").textContent = data.ready ? "可以读写记忆" : "还不能用";
+  $("passed").classList.toggle("hidden", !data.allPassed);
+  $("checkBtn").textContent = data.ready ? "检查详情 ⓘ" : "需要处理 ⓘ";
+  $("refreshBtn").disabled = data.busy;
+  $("pullBtn").disabled = data.busy || !data.ready || !data.selected;
+  $("writeBtn").disabled = data.busy || !data.ready || !$("draft").value.trim();
+  const bot = (data.bots || []).find((item) => item.id === data.selected);
+  $("title").textContent = bot ? bot.label : "搜魂";
+  $("bots").innerHTML = (data.bots || []).map((item) =>
+    `<li><button type="button" data-id="${escapeAttr(item.id)}" class="${item.id === data.selected ? "selected" : ""}">${escapeText(item.label)}</button></li>`
+  ).join("");
+  const source = [data.source, data.note].filter(Boolean).join(" · ");
+  $("source").textContent = source;
+  $("source").classList.toggle("hidden", !source);
+  const rows = shown();
+  if (!rows.length) {
+    const emptyAll = !(data.memories || []).length;
+    $("list").innerHTML = `<div class="empty"><strong>${emptyAll ? "还没有记忆" : "没有匹配"}</strong><div>${emptyAll ? "先在左边选一个 Bot，再拉取。读写会出现在这个 Bot 的对话里。" : "换一个词，或清空搜索。"}</div></div>`;
+  } else {
+    $("list").innerHTML = rows.map((item, index) => `
+      <div class="row">
+        <div class="own ${item.scope || "unknown"}">${escapeText(item.ownership)}</div>
+        <div class="body">
+          <p>${escapeText(item.text)}</p>
+          <div class="tags">
+            ${item.tierLabel ? `<span class="tag">${escapeText(item.tierLabel)}</span>` : ""}
+            ${item.learnedAt ? `<span class="tag">${escapeText(item.learnedAt)}</span>` : ""}
+          </div>
+        </div>
+        <button class="danger" type="button" data-index="${index}" ${data.busy ? "disabled" : ""}>忘掉</button>
+      </div>`).join("");
+  }
+  $("status").textContent = data.busy ? "处理中… " + (data.status || "") : (data.status || "");
+  const checks = (data.checks || []).map((row) =>
+    `<div class="check"><div>${row.ok ? "✓" : "✕"}</div><div><b>${escapeText(row.title)}</b><p>${escapeText(row.detail)}</p></div></div>`
+  ).join("");
+  $("checkPop").innerHTML = `<h3>检查详情</h3>${checks}`;
+  hint();
+}
+
+function escapeText(value) {
+  return String(value ?? "").replace(/[&<>]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[ch]));
+}
+function escapeAttr(value) {
+  return escapeText(value).replace(/"/g, "&quot;");
+}
+
+async function load(promise) {
+  if (promise) state.data = await promise;
+  else state.data = await appState();
+  render();
+}
+
+$("bots").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-id]");
+  if (button) load(appSelect(button.dataset.id));
+});
+$("list").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-index]");
+  if (!button) return;
+  const item = shown()[Number(button.dataset.index)];
+  if (item) load(appForget(item.text));
+});
+$("refreshBtn").onclick = () => load(appRefresh());
+$("pullBtn").onclick = () => load(appPull());
+$("writeBtn").onclick = () => {
+  const text = $("draft").value;
+  load(appWrite(text, state.scope, state.tier)).then(() => {
+    if (state.data && state.data.status && state.data.status.startsWith("已写入")) $("draft").value = "";
+    render();
+  });
+};
+$("draft").addEventListener("input", render);
+$("draft").addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) $("writeBtn").click();
+});
+$("filter").addEventListener("input", () => { state.filter = $("filter").value; render(); });
+for (const id of ["scopeSeg", "tierSeg"]) {
+  $(id).addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    for (const item of $(id).querySelectorAll("button")) item.classList.remove("on");
+    button.classList.add("on");
+    state[id === "scopeSeg" ? "scope" : "tier"] = button.dataset.value;
+    hint();
+  });
+}
+function place(pop, anchor) {
+  const rect = anchor.getBoundingClientRect();
+  pop.style.left = Math.min(rect.left, window.innerWidth - 320) + "px";
+  pop.style.top = Math.max(8, rect.bottom + 8) + "px";
+}
+$("checkBtn").onclick = () => {
+  $("helpPop").classList.add("hidden");
+  $("checkPop").classList.toggle("hidden");
+  place($("checkPop"), $("checkBtn"));
+};
+$("helpBtn").onclick = () => {
+  $("checkPop").classList.add("hidden");
+  $("helpPop").classList.toggle("hidden");
+  place($("helpPop"), $("helpBtn"));
+};
+document.addEventListener("click", (event) => {
+  if (!event.target.closest("#checkPop, #checkBtn")) $("checkPop").classList.add("hidden");
+  if (!event.target.closest("#helpPop, #helpBtn")) $("helpPop").classList.add("hidden");
+});
+load(appRefresh());
+</script>
+</body>
+</html>
