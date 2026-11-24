@@ -19,6 +19,8 @@
   <a href="docs/build.md">编译</a>
   ·
   <a href="SECURITY.md">安全</a>
+  ·
+  <a href="https://x.com/Lniosytest">@Lniosytest</a>
 </p>
 
 <p align="center">
@@ -135,3 +137,7 @@ static/            上述网页的页面
 构建步骤和不要提交的内容在 [CONTRIBUTING.md](CONTRIBUTING.md)。登录信息怎么处理在 [SECURITY.md](SECURITY.md)。版本变化在 [CHANGELOG.md](CHANGELOG.md)。
 
 [MIT](LICENSE)。版权持有人写的是 lniosy。公开仓库之前，如果要用别的名字或别的许可证，改 `LICENSE` 这一处即可。
+
+## 关注作者
+
+觉得搜魂有用，可以在 X 上关注李天才（[@Lniosytest](https://x.com/Lniosytest)），看项目更新和更多 AI、Grok Bot 开源工具。那边也会写 Agent 玩法和独立开发。个人站是 [litiancai.vercel.app](https://litiancai.vercel.app)。
