@@ -19,6 +19,8 @@
   <a href="docs/build.en.md">Build</a>
   ·
   <a href="SECURITY.en.md">Security</a>
+  ·
+  <a href="https://x.com/Lniosytest">@Lniosytest</a>
 </p>
 
 <p align="center">
@@ -133,3 +135,7 @@ The apps are the current version. Do not start the Python page.
 Build steps and what not to commit are in [CONTRIBUTING.en.md](CONTRIBUTING.en.md). Login handling is in [SECURITY.en.md](SECURITY.en.md). Changes are in [CHANGELOG.md](CHANGELOG.md).
 
 [MIT](LICENSE). The copyright line says lniosy. Before making the repository public under another name or license, change `LICENSE`.
+
+## Follow
+
+If Souhun is useful, follow Tiancai Li ([@Lniosytest](https://x.com/Lniosytest)) on X for project updates and more open-source tools for AI and Grok Bot. Notes there also cover agent workflows and indie dev builds. The site is [litiancai.vercel.app](https://litiancai.vercel.app).
